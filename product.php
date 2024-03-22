@@ -23,11 +23,19 @@ if (isset($_GET['id'])) {
                         <!-- Product Details Left -->
                         <div class="product-details-left">
                             <div class="product-details-images slider-navigation-1">
-                                <div class="lg-image">
-                                    <a class="popup-img venobox vbox-item" href="images/product/large-size/<?php echo $row['image']; ?>" data-gall="myGallery">
-                                        <img src="images/product/large-size/<?php echo $row['image']; ?>" alt="product image" style="max-width: 600px; max-height: 400px;">
-                                    </a>
-                                </div>
+                                <?php
+                                // แยกชื่อรูปภาพจากสตริงที่มีรูปภาพหลายรูป
+                                $image_names = explode(',', $row['image']);
+                                foreach ($image_names as $image_name) {
+                                ?>
+                                    <div class="lg-image">
+                                        <a class="popup-img venobox vbox-item" href="images/product/large-size/<?php echo $image_name; ?>" data-gall="myGallery">
+                                            <img src="images/product/large-size/<?php echo $image_name; ?>" alt="product image" style="max-width: 600px; max-height: 400px;">
+                                        </a>
+                                    </div>
+                                <?php
+                                }
+                                ?>
                             </div>
                             <!-- <div class="product-details-thumbs slider-thumbs-1">
                                 <div class="sm-image"><img src="images/product/small-size/<?php echo $row['image']; ?>" alt="product image thumb"></div>
@@ -101,7 +109,7 @@ if (isset($_GET['id'])) {
                                 <!-- Form for adding to cart -->
                                 <a href="messenger.php?receiver_id=<?php echo $row['user_id']; ?>" class="add-to-cart" type="submit"><i class="fab fa-chat"></i> แชทผู้ขาย</a>
                                 <!-- Form for liking -->
-                                <a href="action/favorite.php?id=<?php echo $row['favorite']; ?>" class="like-button"><i class="fa fa-heart"></i> ถูกใจ</a>
+                                <a href="action/favorite.php?id=<?php echo $row['id']; ?>" class="like-button"><i class="fa fa-heart"></i> ถูกใจ</a>
                                 <i class="fa fa-heart text-danger"></i> <?php echo $row['favorite']; ?>
                                 <ul class="rating">
                                     <a href="action/favorite.php?id=<?php echo $row['id']; ?>">

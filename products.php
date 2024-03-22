@@ -17,207 +17,203 @@ include 'config/connect.php';
                             <?php
 
 
-// ตรวจสอบว่ามีการส่งค่าค้นหามาหรือไม่
-if (isset($_GET['search'])) {
-    $search = $_GET['search'];
-    // สร้างคำสั่ง SQL เพื่อค้นหาข้อมูลของสินค้าที่ตรงกับเงื่อนไขที่ระบุ
-    $sql = "SELECT products.*, categories.name AS category_name 
+                            // ตรวจสอบว่ามีการส่งค่าค้นหามาหรือไม่
+                            if (isset($_GET['search'])) {
+                                $search = $_GET['search'];
+                                // สร้างคำสั่ง SQL เพื่อค้นหาข้อมูลของสินค้าที่ตรงกับเงื่อนไขที่ระบุ
+                                $sql = "SELECT products.*, categories.name AS category_name 
             FROM products 
             LEFT JOIN categories ON products.category_id = categories.id 
             WHERE products.name LIKE '%$search%' OR products.color LIKE '%$search%' OR products.price LIKE '%$search%' OR categories.name LIKE '%$search%'";
-} else {
-    // ถ้าไม่มีการส่งค่าค้นหามา ให้เรียกดึงข้อมูลสินค้าทั้งหมด
-    $sql = "SELECT products.*, categories.name AS category_name 
+                            } else {
+                                // ถ้าไม่มีการส่งค่าค้นหามา ให้เรียกดึงข้อมูลสินค้าทั้งหมด
+                                $sql = "SELECT products.*, categories.name AS category_name 
             FROM products 
             LEFT JOIN categories ON products.category_id = categories.id";
-}
+                            }
 
-$result = $conn->query($sql);
+                            $result = $conn->query($sql);
 
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-?>
-        <div class="col-lg-4 col-md-4 col-sm-6 mt-40">
-            <!-- single-product-wrap start -->
-            <div class="product-wrap">
-        <div class="product-image">
-          <a href="product.php?id=<?php echo $row['id']; ?>">
-            <img src="images/product/large-size/<?php echo $row['image']; ?>" alt="Li's Product Image">
-          </a>
-          <?php if (isset($row['sticker']) && $row['sticker']): ?>
-          <span class="sticker">New</span>
-          <?php endif; ?>
-        </div>
-        <div class="product_desc">
-          <div class="product_desc_info">
-            <div class="product-review">
-              <h5 class="manufacturer">
-                <a href="shop-left-sidebar.php"><?php echo $row['category_name']; ?></a>
-              </h5>
-              <div class="rating-box">
-                <ul class="rating">
-                    <a href="action/favorite.php?id=<?php echo $row['id']; ?>">
-                <i class="fa fa-heart text-danger"></i> <?php echo $row['favorite']; ?>
-                </a>
-                </ul>
-              </div>
-            </div>
-            <h4><a class="product_name" href="product.php?id=<?php echo $row['id']; ?>"><?php echo $row['name']; ?></a></h4>
-            <div class="price-box">
-              <span class="new-price">$<?php echo $row['price']; ?></span>
-              <?php if (isset($row['old_price'])): ?>
-              <span class="old-price">$<?php echo $row['old_price']; ?></span>
-              <?php endif; ?>
-              <?php if (isset($row['discount_percentage'])): ?>
-              <span class="discount-percentage"><?php echo '-' . $row['discount_percentage'] . '%'; ?></span>
-              <?php endif; ?>
-            </div>
-          </div>
-          <div class="add-actions">
-            <ul class="add-actions-link">
-              <li class="add-cart active"><a href="#">Add to cart</a></li>
-              <li><a class="links-details" href="wishlist.php"><i class="fa fa-heart-o"></i></a></li>
-              <li><a href="#" title="quick view" class="quick-view-btn" data-toggle="modal" data-target="#exampleModalCenter"><i class="fa fa-eye"></i></a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-            <!-- single-product-wrap end -->
-        </div>
-<?php
-    }
-} else {
-    echo "0 results";
-}
-?>
-
-                                               
+                            if ($result->num_rows > 0) {
+                                while ($row = $result->fetch_assoc()) {
+                            ?>
+                                    <div class="col-lg-4 col-md-4 col-sm-6 mt-40">
+                                        <!-- single-product-wrap start -->
+                                        <div class="product-wrap">
+                                            <div class="product-image">
+                                                <a href="product.php?id=<?php echo $row['id']; ?>">
+                                                    <img src="images/product/large-size/<?php echo $row['image']; ?>" alt="Li's Product Image">
+                                                </a>
+                                                <?php if (isset($row['sticker']) && $row['sticker']) : ?>
+                                                    <span class="sticker">New</span>
+                                                <?php endif; ?>
+                                            </div>
+                                            <div class="product_desc">
+                                                <div class="product_desc_info">
+                                                    <div class="product-review">
+                                                        <h5 class="manufacturer">
+                                                            <a href="shop-left-sidebar.php"><?php echo $row['category_name']; ?></a>
+                                                        </h5>
+                                                        <div class="rating-box">
+                                                            <ul class="rating">
+                                                                <a href="action/favorite.php?id=<?php echo $row['id']; ?>">
+                                                                    <i class="fa fa-heart text-danger"></i> <?php echo $row['favorite']; ?>
+                                                                </a>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    <h4><a class="product_name" href="product.php?id=<?php echo $row['id']; ?>"><?php echo $row['name']; ?></a></h4>
+                                                    <div class="price-box">
+                                                        <span class="new-price">$<?php echo $row['price']; ?></span>
+                                                        <?php if (isset($row['old_price'])) : ?>
+                                                            <span class="old-price">$<?php echo $row['old_price']; ?></span>
+                                                        <?php endif; ?>
+                                                        <?php if (isset($row['discount_percentage'])) : ?>
+                                                            <span class="discount-percentage"><?php echo '-' . $row['discount_percentage'] . '%'; ?></span>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                </div>
+                                                <div class="add-actions">
+                                                    <ul class="add-actions-link">
+                                                        <li class="add-cart active"><a href="#">Add to cart</a></li>
+                                                        <li><a class="links-details" href="wishlist.php"><i class="fa fa-heart-o"></i></a></li>
+                                                        <li><a href="#" title="quick view" class="quick-view-btn" data-toggle="modal" data-target="#exampleModalCenter"><i class="fa fa-eye"></i></a></li>
+                                                    </ul>
+                                                </div>
                                             </div>
                                         </div>
-                                
-                                    
-                    
-                            </div>
-                            <!-- shop-products-wrapper end -->
+                                        <!-- single-product-wrap end -->
+                                    </div>
+                            <?php
+                                }
+                            } else {
+                                echo '<div class="no-product-message">ไม่พบสินค้า</div>';
+                            }
+
+                            ?>
+
+
                         </div>
-                        <div class="col-lg-3 order-2 order-lg-1">
-                            <!--sidebar-categores-box start  -->
-                            <div class="sidebar-categores-box mt-sm-30 mt-xs-30">
-                                
-                            <!--sidebar-categores-box end  -->
-                            <!--sidebar-categores-box start  -->
-                            <div class="sidebar-categores-box">
-                                <div class="sidebar-title">
-                                    <h2>Filter By</h2>
-                                </div>
-                                <!-- btn-clear-all start -->
-                                <button class="btn-clear-all mb-sm-30 mb-xs-30">Clear all</button>
-                                <!-- btn-clear-all end -->
-                                <!-- filter-sub-area start -->
-                                <!-- <div class="filter-sub-area">
-                                    <h5 class="filter-sub-titel">Brand</h5>
-                                    <div class="categori-checkbox">
-                                        <form action="#">
-                                            <ul>
-                                                <li><input type="checkbox" name="product-categori"><a href="#">Prime Video (13)</a></li>
-                                                <li><input type="checkbox" name="product-categori"><a href="#">Computers (12)</a></li>
-                                                <li><input type="checkbox" name="product-categori"><a href="#">Electronics (11)</a></li>
-                                            </ul>
-                                        </form>
-                                    </div>
-                                 </div> -->
-                                <!-- filter-sub-area end -->
-                                <!-- filter-sub-area start -->
-                                <div class="filter-sub-area pt-sm-10 pt-xs-10">
-    <h5 class="filter-sub-titel">Categories</h5>
-    <div class="categori-checkbox">
-        <form action="#">
-            <ul>
-                <?php
-                $cate = "SELECT id, name FROM categories";
+                    </div>
 
-                // ทำการ query ข้อมูล
-                $categories = $conn->query($cate);
 
-                // ถ้ามีข้อมูลหมวดหมู่สินค้า
-                if ($categories->num_rows > 0) {
-                    while ($category = $categories->fetch_assoc()) {
-                        $categoryId = $category['id'];
-                        // ค้นหาจำนวนสินค้าในหมวดหมู่นี้
-                        $countSql = "SELECT COUNT(*) AS count FROM products WHERE category_id = $categoryId";
-                        $countResult = $conn->query($countSql);
-                        $countRow = $countResult->fetch_assoc();
-                        $productCount = $countRow['count'];
 
-                        // แสดงรายการหมวดหมู่พร้อมกับจำนวนสินค้า
-                        echo '<li><input type="checkbox" name="category[]" value="' . $categoryId . '"><a href="#">' . $category['name'] . ' (' . $productCount . ')</a></li>';
-                    }
-                } else {
-                    echo "No categories available.";
+                </div>
+                <!-- shop-products-wrapper end -->
+            </div>
+            <style>
+                .no-product-message {
+                    text-align: center;
+                    /* จัดข้อความตรงกลาง */
+                    font-size: 50px;
+                    /* ปรับขนาดตัวอักษรใหญ่ขึ้น */
+                    margin-top: 20px;
+                    /* กำหนดระยะห่างด้านบน */
                 }
-                ?>
-            </ul>
-        </form>
-    </div>
-</div>
 
+                .category-wrapper {
+                    border: 1px solid #e0e0e0;
+                    padding: 15px;
+                    border-radius: 8px;
+                    background-color: #f9f9f9;
+                    margin-bottom: 10px;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    transition: background-color 0.3s ease;
+                    text-decoration: none;
+                    color: #333;
+                }
 
-                                <!-- filter-sub-area end -->
-                                <!-- filter-sub-area start -->
-                                <!-- <div class="filter-sub-area pt-sm-10 pt-xs-10">
-                                    <h5 class="filter-sub-titel">Size</h5>
-                                    <div class="size-checkbox">
-                                        <form action="#">
-                                            <ul>
-                                                <li><input type="checkbox" name="product-size"><a href="#">S (3)</a></li>
-                                                <li><input type="checkbox" name="product-size"><a href="#">M (3)</a></li>
-                                                <li><input type="checkbox" name="product-size"><a href="#">L (3)</a></li>
-                                                <li><input type="checkbox" name="product-size"><a href="#">XL (3)</a></li>
-                                            </ul>
-                                        </form>
+                .category-wrapper:hover {
+                    background-color: #e0e0e0;
+                }
+
+                .category-info {
+                    display: flex;
+                    flex-direction: column;
+                }
+
+                .category-name {
+                    font-size: 16px;
+                    font-weight: bold;
+                    margin-bottom: 5px;
+                }
+
+                .product-count {
+                    font-size: 14px;
+                    color: #666;
+                }
+
+                .category-icon {
+                    font-size: 24px;
+                    color: #999;
+                }
+            </style>
+
+            <div class="col-lg-3 order-2 order-lg-1">
+                <div class="sidebar-category-container mt-sm-30 mt-xs-30">
+                    <div class="sidebar-categores-box">
+                        <div class="filter-sub-area pt-sm-10 pt-xs-10">
+                            <h4 class="filter-sub-titel">Categories</h5>
+                                <div class="categori-checkbox">
+                                    <ul>
+                                        <?php
+                                        $sql = "SELECT id, name FROM categories";
+                                        $categories = $conn->query($sql);
+                                        if ($categories->num_rows > 0) {
+                                            while ($category = $categories->fetch_assoc()) {
+                                                $categoryName = $category['name'];
+                                                $countSql = "SELECT COUNT(*) AS count FROM products WHERE category_name = '$categoryName'";
+                                                $countResult = $conn->query($countSql);
+                                                $countRow = $countResult->fetch_assoc();
+                                                $productCount = $countRow['count'];
+                                                echo '<li><a href="#" class="category-link mb-sm-30 mb-xs-30" data-category="' . $categoryName . '">
+                                    <div class="category-wrapper">
+                                        <div class="category-info">
+                                            <div class="category-name">' . $category['name'] . '</div>
+                                            <div class="product-count">(' . $productCount . ')</div>
+                                        </div>
+                                        <div class="category-icon">&#9654;</div>
                                     </div>
-                                </div> -->
-                                <!-- filter-sub-area end -->
-                                <!-- filter-sub-area start -->
-                                <div class="filter-sub-area pt-sm-10 pt-xs-10">
-                                    <h5 class="filter-sub-titel">Color</h5>
-                                    <div class="color-categoriy">
-                                        <form action="#">
-                                            <ul>
-                                                <li><span class="white"></span><a href="#">White (1)</a></li>
-                                                <li><span class="black"></span><a href="#">Black (1)</a></li>
-                                                <li><span class="Orange"></span><a href="#">Orange (3) </a></li>
-                                                <li><span class="Blue"></span><a href="#">Blue  (2) </a></li>
-                                            </ul>
-                                        </form>
-                                    </div>
+                                </a></li>';
+                                            }
+                                        } else {
+                                            echo "No categories available.";
+                                        }
+                                        ?>
+                                        <script>
+                                            document.addEventListener('DOMContentLoaded', function() {
+                                                var categoryLinks = document.querySelectorAll('.category-link');
+                                                categoryLinks.forEach(function(link) {
+                                                    link.addEventListener('click', function(event) {
+                                                        event.preventDefault();
+                                                        var categoryName = this.getAttribute('data-category');
+                                                        redirectToProducts(categoryName);
+                                                    });
+                                                });
+
+                                                function redirectToProducts(categoryName) {
+                                                    window.location.href = "products.php?search=" + encodeURIComponent(categoryName);
+                                                }
+                                            });
+                                        </script>
+                                    </ul>
                                 </div>
-                                <!-- filter-sub-area end -->
-                                <!-- filter-sub-area start -->
-                                <!-- <div class="filter-sub-area pt-sm-10 pb-sm-15 pb-xs-15">
-                                    <h5 class="filter-sub-titel">Dimension</h5>
-                                    <div class="categori-checkbox">
-                                        <form action="#">
-                                            <ul>
-                                                <li><input type="checkbox" name="product-categori"><a href="#">40x60cm (6)</a></li>
-                                                <li><input type="checkbox" name="product-categori"><a href="#">60x90cm (6)</a></li>
-                                                <li><input type="checkbox" name="product-categori"><a href="#">80x120cm (6)</a></li>
-                                            </ul>
-                                        </form>
-                                    </div> -->
-                                 </div>
-                                <!-- filter-sub-area end -->
-                            </div>
-                            <!--sidebar-categores-box end  -->
-                            <!-- category-sub-menu start -->
-                            
                         </div>
                     </div>
                 </div>
             </div>
 
-            <?php
 
- include 'include/footer.php'
+
+
+        </div>
+    </div>
+</div>
+
+<?php
+
+include 'include/footer.php'
 
 ?>

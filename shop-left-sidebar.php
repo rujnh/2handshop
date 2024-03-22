@@ -18,28 +18,21 @@ include 'config/connect.php';
 
 
                             // ตรวจสอบว่ามีการส่งค่าค้นหามาหรือไม่
-                            if (isset($_GET['search'])) {
-                                $search = $_GET['search'];
-                                // สร้างคำสั่ง SQL เพื่อค้นหาข้อมูลของสินค้าที่ตรงกับเงื่อนไขที่ระบุ
-                                $sql = "SELECT products.*, categories.name AS category_name 
-            FROM products 
-            LEFT JOIN categories ON products.category_id = categories.id 
-            WHERE products.name LIKE '%$search%' OR products.color LIKE '%$search%' OR products.price LIKE '%$search%' OR categories.name LIKE '%$search%'";
-                            } else {
-                                // ถ้าไม่มีการส่งค่าค้นหามา ให้เรียกดึงข้อมูลสินค้าทั้งหมด
-                                $sql = "SELECT products.*, categories.name AS category_name 
-            FROM products 
-            LEFT JOIN categories ON products.category_id = categories.id";
-                            }
+                            $categoryName = $_GET['category_name'] ?? '';
 
+
+                            $sql = "SELECT * FROM products WHERE category_name = '$categoryName'";
                             $result = $conn->query($sql);
 
                             if ($result->num_rows > 0) {
+
                                 while ($row = $result->fetch_assoc()) {
+
                             ?>
                                     <div class="col-lg-4 col-md-4 col-sm-6 mt-40">
                                         <!-- single-product-wrap start -->
                                         <div class="product-wrap">
+
                                             <div class="product-image">
                                                 <a href="product.php?id=<?php echo $row['id']; ?>">
                                                     <img src="images/product/large-size/<?php echo $row['image']; ?>" alt="Li's Product Image">
@@ -52,8 +45,9 @@ include 'config/connect.php';
                                                 <div class="product_desc_info">
                                                     <div class="product-review">
                                                         <h5 class="manufacturer">
-                                                            <a href="shop-left-sidebar.php"><?php echo $row['category_name']; ?></a>
+                                                            <a href="shop-left-sidebar.php?category_name=<?php echo $row['category_name']; ?>"><?php echo $row['category_name']; ?></a>
                                                         </h5>
+
                                                         <div class="rating-box">
                                                             <ul class="rating">
                                                                 <a href="action/favorite.php?id=<?php echo $row['id']; ?>">
@@ -87,9 +81,8 @@ include 'config/connect.php';
                             <?php
                                 }
                             } else {
-                                echo '<div class="no-product-message">ไม่พบสินค้า</div>';
+                                echo "ไม่พบสินค้า";
                             }
-
                             ?>
 
 
@@ -102,15 +95,6 @@ include 'config/connect.php';
                 <!-- shop-products-wrapper end -->
             </div>
             <style>
-                .no-product-message {
-                    text-align: center;
-                    /* จัดข้อความตรงกลาง */
-                    font-size: 50px;
-                    /* ปรับขนาดตัวอักษรใหญ่ขึ้น */
-                    margin-top: 20px;
-                    /* กำหนดระยะห่างด้านบน */
-                }
-
                 .category-wrapper {
                     border: 1px solid #e0e0e0;
                     padding: 15px;

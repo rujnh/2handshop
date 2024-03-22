@@ -32,7 +32,7 @@ include 'config/connect.php';
                                 </div>
                             </div>
                             <div class="col-md-4 mt-10 mb-20 text-left text-md-right">
-                                <a href="/forgotpass.php"> Forgot Password?</a>
+                                <a href="/2handshop/forgotpass.php"> Forgot Password?</a>
                             </div>
                             <div class="col-md-12">
                                 <button type="submit" class="register-button mt-0">Login</button>
@@ -46,8 +46,8 @@ include 'config/connect.php';
     </div>
 
 
-<?php
+    <?php
 
- include 'include/footer.php'
+    include 'include/footer.php'
 
-?>
+    ?>
