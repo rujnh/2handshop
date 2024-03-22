@@ -52,7 +52,7 @@ include 'config/connect.php';
                                                 <div class="product_desc_info">
                                                     <div class="product-review">
                                                         <h5 class="manufacturer">
-                                                            <a href="shop-left-sidebar.php"><?php echo $row['category_name']; ?></a>
+                                                            <a href="shop-left-sidebar.php?category_name=<?php echo $row['category_name']; ?>"><?php echo $row['category_name']; ?></a>
                                                         </h5>
                                                         <div class="rating-box">
                                                             <ul class="rating">
