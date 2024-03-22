@@ -11,12 +11,12 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
-// คำสั่ง SQL เพื่อดึงข้อมูลสินค้าที่ผู้ใช้โพสขาย
+// คำสั่ง SQL เพื่อดึงข้อมูลสินค้าที่ผู้ใช้โพสขายพร้อมกับรูปภาพ
 $sql = "SELECT products.*, product_images.image 
         FROM products 
         INNER JOIN product_images ON products.id = product_images.product_id
         WHERE products.user_id = $user_id
-        LIMIT 1";
+        GROUP BY products.id";
 
 
 $result = mysqli_query($conn, $sql);
