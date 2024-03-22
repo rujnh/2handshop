@@ -54,9 +54,11 @@ include 'config/connect.php';
                                         <!-- single-product-wrap start -->
                                         <div class="product-wrap">
                                             <div class="product-image">
-                                                <a href="product.php?id=<?php echo $row['id']; ?>">
-                                                    <img src="images/product/large-size/<?php echo $row['image_path']; ?>" alt="Li's Product Image" class="product-image">
+                                                <a href="product.php?id=<?php echo $row['id']; ?>" style="display: inline-block; margin-left: 10px;">
+                                                    <img src="images/product/large-size/<?php echo $row['image_path']; ?>" alt="Li's Product Image" class="product-image" style="width: 250px; height: 200px;">
                                                 </a>
+
+
 
                                                 <?php if (isset($row['sticker']) && $row['sticker']) : ?>
                                                     <span class="sticker">New</span>

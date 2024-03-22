@@ -12,12 +12,10 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 
 // คำสั่ง SQL เพื่อดึงข้อมูลสินค้าที่ถูกใจของผู้ใช้พร้อมกับรูปภาพจากตาราง product_images
-$sql = "SELECT products.*, favorite.id AS favorite_id, product_images.image AS product_image 
+$sql = "SELECT products.*, favorite.id AS favorite_id
         FROM products
         INNER JOIN favorite ON products.id = favorite.product_id
-        LEFT JOIN product_images ON products.id = product_images.product_id
-        WHERE favorite.user_id = $user_id
-        LIMIT 1";
+        WHERE favorite.user_id = $user_id";
 
 $result = mysqli_query($conn, $sql);
 ?>
@@ -41,9 +39,15 @@ $result = mysqli_query($conn, $sql);
                         <?php
                         if (mysqli_num_rows($result) > 0) {
                             while ($row = mysqli_fetch_assoc($result)) {
+                                // ดึงรูปภาพจากตาราง product_images ของสินค้านี้
+                                $product_id = $row['id'];
+                                $sql_image = "SELECT image FROM product_images WHERE product_id = $product_id LIMIT 1";
+                                $result_image = mysqli_query($conn, $sql_image);
+                                $image_row = mysqli_fetch_assoc($result_image);
+                                $product_image = $image_row['image'];
                         ?>
                                 <tr>
-                                    <td><img src="images/product/large-size/<?php echo $row['product_image']; ?>" alt="<?php echo $row['name']; ?>" style="width: 100px;"></td>
+                                    <td><img src="images/product/large-size/<?php echo $product_image; ?>" alt="<?php echo $row['name']; ?>" style="width: 100px;"></td>
                                     <td><?php echo $row['name']; ?></td>
                                     <td><?php echo $row['description']; ?></td>
                                     <td><?php echo number_format($row['price'], 0); ?></td>
