@@ -1,10 +1,15 @@
 <?php
-
 include 'include/header.php';
 include 'config/connect.php';
 
-
 ?>
+<style>
+    .product-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+</style>
 <div class="content-wraper pt-60 pb-60">
     <div class="container">
         <div class="row">
@@ -15,21 +20,29 @@ include 'config/connect.php';
                     <div class="product-area shop-product-area">
                         <div class="row">
                             <?php
-
-
                             // ตรวจสอบว่ามีการส่งค่าค้นหามาหรือไม่
                             if (isset($_GET['search'])) {
                                 $search = $_GET['search'];
                                 // สร้างคำสั่ง SQL เพื่อค้นหาข้อมูลของสินค้าที่ตรงกับเงื่อนไขที่ระบุ
-                                $sql = "SELECT products.*, categories.name AS category_name 
-            FROM products 
-            LEFT JOIN categories ON products.category_id = categories.id 
-            WHERE products.name LIKE '%$search%' OR products.color LIKE '%$search%' OR products.price LIKE '%$search%' OR categories.name LIKE '%$search%'";
+                                $sql = "SELECT p.*, pi.image AS image_path, c.name AS category_name 
+                                        FROM products p
+                                        LEFT JOIN (
+                                            SELECT product_id, MIN(id) AS min_image_id, image
+                                            FROM product_images
+                                            GROUP BY product_id
+                                        ) pi ON p.id = pi.product_id
+                                        LEFT JOIN categories c ON p.category_id = c.id
+                                        WHERE p.name LIKE '%$search%' OR p.color LIKE '%$search%' OR p.price LIKE '%$search%' OR c.name LIKE '%$search%'";
                             } else {
                                 // ถ้าไม่มีการส่งค่าค้นหามา ให้เรียกดึงข้อมูลสินค้าทั้งหมด
-                                $sql = "SELECT products.*, categories.name AS category_name 
-            FROM products 
-            LEFT JOIN categories ON products.category_id = categories.id";
+                                $sql = "SELECT p.*, pi.image AS image_path, c.name AS category_name 
+                                        FROM products p
+                                        LEFT JOIN (
+                                            SELECT product_id, MIN(id) AS min_image_id, image
+                                            FROM product_images
+                                            GROUP BY product_id
+                                        ) pi ON p.id = pi.product_id
+                                        LEFT JOIN categories c ON p.category_id = c.id";
                             }
 
                             $result = $conn->query($sql);
@@ -42,8 +55,9 @@ include 'config/connect.php';
                                         <div class="product-wrap">
                                             <div class="product-image">
                                                 <a href="product.php?id=<?php echo $row['id']; ?>">
-                                                    <img src="images/product/large-size/<?php echo $row['image']; ?>" alt="Li's Product Image">
+                                                    <img src="images/product/large-size/<?php echo $row['image_path']; ?>" alt="Li's Product Image" class="product-image">
                                                 </a>
+
                                                 <?php if (isset($row['sticker']) && $row['sticker']) : ?>
                                                     <span class="sticker">New</span>
                                                 <?php endif; ?>
@@ -52,7 +66,7 @@ include 'config/connect.php';
                                                 <div class="product_desc_info">
                                                     <div class="product-review">
                                                         <h5 class="manufacturer">
-                                                            <a href="shop-left-sidebar.php"><?php echo $row['category_name']; ?></a>
+                                                            <a href="products.php?search=<?php echo $row['category_name']; ?>"><?php echo $row['category_name']; ?></a>
                                                         </h5>
                                                         <div class="rating-box">
                                                             <ul class="rating">
@@ -64,7 +78,8 @@ include 'config/connect.php';
                                                     </div>
                                                     <h4><a class="product_name" href="product.php?id=<?php echo $row['id']; ?>"><?php echo $row['name']; ?></a></h4>
                                                     <div class="price-box">
-                                                        <span class="new-price">$<?php echo $row['price']; ?></span>
+                                                        <span class="new-price">$<?php echo number_format($row['price'], 0); ?></span>
+
                                                         <?php if (isset($row['old_price'])) : ?>
                                                             <span class="old-price">$<?php echo $row['old_price']; ?></span>
                                                         <?php endif; ?>
@@ -93,6 +108,7 @@ include 'config/connect.php';
                             ?>
 
 
+
                         </div>
                     </div>
 
@@ -102,6 +118,12 @@ include 'config/connect.php';
                 <!-- shop-products-wrapper end -->
             </div>
             <style>
+                .product-image {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+
                 .no-product-message {
                     text-align: center;
                     /* จัดข้อความตรงกลาง */

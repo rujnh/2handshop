@@ -80,13 +80,10 @@ $result = mysqli_query($conn, $sql);
             </div>
             <div class="form-group">
                 <label for="image">รูปภาพ:</label>
-                <input type="file" class="form-control-file" id="image" name="image[]" accept="image/*" multiple onchange="previewImages(event)">
+                <input type="file" class="form-control-file" id="image" name="image[]" multiple="multiple" accept="image/*" multiple onchange="previewImages(event)">
                 <div id="imagePreview"></div> <!-- ส่วนนี้จะใช้สำหรับแสดงรูปภาพ -->
                 <button type="button" id="removeImageButton" class="btn" onclick="removeImage()" style="color: red; background: none; border: none; font-size: 1.2em; display: none;">
                     &times;
-                </button>
-
-
                 </button>
 
 
@@ -108,6 +105,39 @@ $result = mysqli_query($conn, $sql);
     </div>
 </div>
 <script>
+    // ฟังก์ชันตรวจสอบนามสกุลของไฟล์ภาพ
+    function checkFileType(file) {
+        // กำหนดนามสกุลของไฟล์ที่ยอมรับ
+        const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+        // ตรวจสอบว่านามสกุลของไฟล์ตรงกับที่ระบุหรือไม่
+        return allowedExtensions.test(file.name);
+    }
+
+    // ฟังก์ชันตรวจสอบไฟล์ที่เลือกเป็นรูปภาพ
+    function validateImages() {
+        // หากมีไฟล์ที่เลือก
+        if (this.files.length > 0) {
+            // วนลูปทุกไฟล์
+            for (let i = 0; i < this.files.length; i++) {
+                // ตรวจสอบนามสกุลของไฟล์
+                if (!checkFileType(this.files[i])) {
+                    // แสดงข้อความแจ้งเตือน
+                    alert("กรุณาเลือกไฟล์ภาพที่มีนามสกุล .jpg, .jpeg, .png, .gif เท่านั้น");
+                    // ล้างค่า input file
+                    this.value = '';
+                    removeImage();
+                    return false;
+                }
+
+            }
+        }
+        return true;
+    }
+
+    // เชื่อมตัวแสดงผลกับ input file
+    const inputImages = document.getElementById('image');
+    // เมื่อมีการเลือกไฟล์ภาพ
+    inputImages.addEventListener('change', validateImages);
     var counter = 0; // เพิ่มตัวแปรนับรูปภาพ
 
     function previewImages(event) {
@@ -154,6 +184,8 @@ $result = mysqli_query($conn, $sql);
         var imgContainer = document.getElementById('img_' + id).parentNode; // หาคอนเทนเนอร์ของรูปภาพ
         imgContainer.parentNode.removeChild(imgContainer); // ลบคอนเทนเนอร์ที่บรรจุรูปภาพออก
         counter--; // ลดค่าตัวแปรนับรูปภาพ
+
+
     }
 </script>
 

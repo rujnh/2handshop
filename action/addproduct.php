@@ -15,28 +15,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $condition_id = $_POST['condition_id'];
         $tel_number = $_POST['tel_number'];
 
-        // อัปโหลดไฟล์รูปภาพ
-        $image_names = array();
-        foreach ($_FILES['image']['tmp_name'] as $key => $tmp_name) {
-            $image_name = $_FILES['image']['name'][$key];
-            $image_tmp = $_FILES['image']['tmp_name'][$key];
-            $image_path = "../images/product/large-size/" . $image_name;
-            if (move_uploaded_file(
-                $image_tmp,
-                $image_path
-            )) {
-                $image_names[] = $image_name;
+        // เตรียมคำสั่ง SQL สำหรับเพิ่มข้อมูลในตาราง products
+        $sql_products = "INSERT INTO products (name, description, color, category_id, created_at, price, favorite, user_id, condition_id, tel_number) 
+                         VALUES ('$name', '$description', '$color', '$category_id', NOW(), '$price', 0, '$user_id', '$condition_id', '$tel_number')";
+
+        // ทำการเพิ่มข้อมูลลงในตาราง products
+        if ($conn->query($sql_products) === TRUE) {
+            $last_product_id = $conn->insert_id; // รหัสสินค้าล่าสุดที่เพิ่มเข้าไปในตาราง products
+
+            // อัปโหลดไฟล์รูปภาพ
+            foreach ($_FILES['image']['tmp_name'] as $key => $tmp_name) {
+                $image_name = $_FILES['image']['name'][$key];
+                $image_tmp = $_FILES['image']['tmp_name'][$key];
+                $image_path = "../images/product/large-size/" . $image_name;
+
+                if (move_uploaded_file($image_tmp, $image_path)) {
+                    // เตรียมคำสั่ง SQL สำหรับเพิ่มข้อมูลในตาราง product_images
+                    $sql_product_images = "INSERT INTO product_images (product_id, image, created_at) 
+                                           VALUES ('$last_product_id', '$image_name', NOW())";
+
+                    // ทำการเพิ่มข้อมูลลงในตาราง product_images
+                    $conn->query($sql_product_images);
+                } else {
+                    echo "เกิดข้อผิดพลาดในการอัปโหลดไฟล์รูปภาพ: " . $_FILES['image']['error'][$key];
+                }
             }
-        }
 
-        // รวมชื่อไฟล์เป็น string โดยใช้ implode()
-        $image_names_string = implode("', '", $image_names);
-
-        // เตรียมคำสั่ง SQL สำหรับเพิ่มข้อมูลในฐานข้อมูล
-        $sql = "INSERT INTO products (name,description, color, category_id, image, created_at, price, favorite, user_id, condition_id, tel_number) VALUES ('$name', '$description', '$color', '$category_id', '$image_names_string', NOW(), '$price', 0, '$user_id', '$condition_id', '$tel_number')";
-
-        // ทำการเพิ่มข้อมูลลงในฐานข้อมูล
-        if ($conn->query($sql) === TRUE) {
+            // ให้หน้าเว็บเปลี่ยนไปที่หน้าแรกหลังจากเพิ่มสินค้าเสร็จสมบูรณ์
             header("Location: ../index.php");
         } else {
             echo "มีข้อผิดพลาดในการเพิ่มสินค้า: " . $conn->error;

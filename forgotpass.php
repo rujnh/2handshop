@@ -36,6 +36,6 @@ include 'config/connect.php';
 
     <?php
 
-    // include 'include/footer.php'
+    include 'include/footer.php'
 
     ?>

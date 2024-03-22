@@ -3,7 +3,7 @@
 $servername = "127.0.0.1:3307";
 $username = "root";
 $password = "";
-$dbname = "test2";
+$dbname = "2handshop";
 
 // สร้างการเชื่อมต่อ
 $conn = new mysqli($servername, $username, $password, $dbname);
